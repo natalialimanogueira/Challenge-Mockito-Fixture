@@ -19,7 +19,7 @@ public class PersonTemplate implements TemplateLoader {
 
         Fixture.of(Person.class).addTemplate("test").inherits(ANDREOLI, new Rule() {{
             add("name", "test");
-            add("phones", regex("(\\d{2})-(\\d{4})-(\\d{4})"));
+            add("phones", regex("[(]\\d{2}[)] (9\\d{4})-(\\d{4})"));
         }});
 
         Fixture.of(Person.class).addTemplate(XPTO, new Rule() {{

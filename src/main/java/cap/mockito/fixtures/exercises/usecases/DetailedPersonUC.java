@@ -8,16 +8,16 @@ public class DetailedPersonUC {
         return detailedPerson.getAddress();
     }
 
-    public boolean searchPersonRelatives(DetailedPerson detailedPerson, String relative){
+    public boolean searchPersonRelatives(DetailedPerson detailedPerson, String relative) {
         return detailedPerson.getRelatives().contains(relative);
     }
 
-    public void drinkAlcohol(DetailedPerson detailedPerson){
-        if (detailedPerson.getAge() >= 18) {
-            System.out.println("Drinking alcohol");
-        }
-        else {
-            throw new RuntimeException("You're not allowed to drink alcohol yet");
-        }
+    public void drinkAlcohol(DetailedPerson detailedPerson) {
+        System.out.println(detailedPerson.getName() + " is drinking alcohol");
+    }
+
+    public void printStringAndInt(String str, int number) {
+        System.out.println("str = " + str);
+        System.out.println("number = " + number);
     }
 }

@@ -153,7 +153,6 @@ ok           Teste se o método printStringAndInt() é chamado em cada caso e co
         verify(detailedPersonUC, never()).getPersonAddress(any(DetailedPerson.class));
         verify(detailedPersonUC, never()).printStringAndInt(anyString(), anyInt());
 
-
     }
 
     // Faça com que a variável address dentro do método execute() nunca fique vazia.

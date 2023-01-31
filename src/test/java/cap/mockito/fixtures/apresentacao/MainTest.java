@@ -22,19 +22,18 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MainTest {
-    //  @Mock é usado para fazer o mock de um objeto/classe/etc. Aqui é criada uma cópia da estrutura dessa classe com
-//  uma implementação vazia.
 
-    //    @Spy
+
+    // @Spy faz chamada da classe real.
     @Mock
     PrintValues printValues/* = mock(PrintValues.class)*/;
-    //    @Mock
+
     @Spy
     Values values/* = mock(Values.class)*/;
 
-    //  @InjectMocks é usado para injetar as dependências da classe a ser testada. O Mockito vai criar uma instância real dessa classe e
-//  injetar todos os objetos @Mock que foram declarados na classe de teste.
-    @InjectMocks
+    //  @InjectMocks = criar uma intancia e injeta as dependências necessárias que estão anotadas com @Mock.
+
+    @InjectMocks// ou uso o Spy, pois ele é uma alternativa ao  @InjectMocks
     Main home;
 
     @Captor

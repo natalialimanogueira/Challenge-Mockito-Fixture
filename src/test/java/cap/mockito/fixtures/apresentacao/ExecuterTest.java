@@ -5,109 +5,79 @@ import cap.mockito.fixtures.exercises.domain.Address;
 import cap.mockito.fixtures.exercises.domain.DetailedPerson;
 import cap.mockito.fixtures.exercises.usecases.DetailedPersonUC;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-/*
-    Crie testes usando @Mock e @Spy para a classe Executer,
-    utilize o Fixture-Factory para facilitar a criação de objetos para testes. (utilize apenas o fixture para a criação de instâncias, mas se for um objeto vazio não é necessário)
-ok  No método getAddressOf() do Executer, faça ele retornar um endereço mesmo passando um objeto vazio para ele (objeto vazio = new DetailedPerson())
-ok  No método isRelative() do Executer, faça os 2 cenários abaixo:
-ok       Se a string passada for "Java" ou "JUnit", retorne true;
-         Se a string passada for qualquer outra string, retorne false;                      ?????
+@ExtendWith(MockitoExtension.class)//1
 
-ok  No método printStrAndInt() do Executer, teste se o método detailedPersonUC.printStringAndInt() foi chamado duas vezes
-    e cada parâmetro em cada chamada.                                                       ????? verificar se está certo
-
-    No método execute() do Executer, faça o cenário de sucesso e de erro.
-ok      Se a idade for menor que 18, faça o teste para assegurar que o detailedPersonUC.printStringAndInt() e detailedPersonUC.getPersonAddress() não são chamados.
-ok      Teste se o método printStringAndInt() é chamado em cada caso e com os parâmetros corretos. (age <18)
-ok      Teste se o método printStringAndInt() é chamado em cada caso e com os parâmetros corretos. (age >18)
-        Faça com que a variável address dentro do método execute() nunca fique vazia.   ?????? verificar se está certo
-
- */
-
-@ExtendWith(MockitoExtension.class)
 public class ExecuterTest {
+    //como a classe Execute será testada, faz-se necessário a inclusão dessa anotação (@InjectMocks), uma vez que
+    // será criado mocks
     @InjectMocks
-    private Executer service;
-    @Mock
+    private Executer executer;
+    //  @Mock essa anotação é usada para fazer o mock de um objeto/classe. Aqui é criada uma cópia
+    //  da estrutura dessa classe com uma implementação ficticia.
+    @Mock//2
     private DetailedPersonUC detailedPersonUC;
+
     @Mock
     private DetailedPerson person;
     @Mock
-    private Address address;
+    private Address address1;
 
-    private List<String> string = new ArrayList<>();
-    String firt = new String("testando");
 
-/*    @BeforeEach
-    public void beforeEach() {
+    @Before    // habilitando as anotaçoes @InjectMocks e @Mock
+    public void setup() {
         MockitoAnnotations.initMocks(this);
-        //
-        this.service = new Executer(detailedPersonUC);
-        this.address = new Address("av", "Gyn", "Go", "Brazil");
-        //                                                   street, city, state,cautry
-        //                nome, age, List<String> relatives, address
-        this.person = new DetailedPerson("Natalia", 30, Collections.singletonList("Single"), address);
     }
- */
 
-    /*
-       No método getAddressOf() do Executer, faça ele retornar um endereço mesmo passando um objeto
-       vazio para ele (objeto vazio = new DetailedPerson())
-    */
+
+    //mesmo passando um objeto (detailedPerson) vazio, precisa retornar um endereço
     @Test
-    void returnAddressAnyWay() {
-        DetailedPerson person = new DetailedPerson();
-        Mockito.when(service.getAddressOf(person)).thenReturn(address);
-        Address retorno = service.getAddressOf(person);
+    void returnAddressAnyWay() { //rodando
+                                // objeto criado vazio
+                // quando for chamado
+        DetailedPerson detailedPerson = new DetailedPerson();
+        Mockito.when(executer.getAddressOf(detailedPerson)).thenReturn(address1);
+       // ou fazer assim:
+        // doReturn(address1).when(executer).getAddressOf(new DetailedPerson());
+                          //estou chamando o método e ele retorna um endereço
+        Address retorno = executer.getAddressOf(detailedPerson);
+        //check se o objeto não é nulo
         Assert.assertNotNull(retorno);
+        System.out.println(retorno);//address1. Precisava ver o que estava chegando
     }
-
-    /*    No método isRelative() do Executer, faça os 2 cenários abaixo:
-          Se a string passada for "Java" ou "JUnit", retorne true;
-          Se a string passada for qualquer outra string, retorne false;
-     */
     @Test
-    void returnTrueJava() {
+    void returnTrueJava() {//rodando
         Mockito.when(detailedPersonUC.searchPersonRelatives(person, "Java")).thenReturn(true);
-        Boolean retorno = service.isRelative(person, "Java");
+        Boolean retorno = executer.isRelative(person, "Java");
         Assert.assertTrue(retorno);
     }
 
     @Test
-    void returnTrueJUnit() {
+    void returnTrueJUnit() {//rodando
         Mockito.when(detailedPersonUC.searchPersonRelatives(person, "JUnit")).thenReturn(true);
-        Boolean retorno = service.isRelative(person, "JUnit");
+        Boolean retorno = executer.isRelative(person, "JUnit");
         Assert.assertTrue(retorno);
     }
+    @Test// rodando
+    void returnfalseAnyway() {// aqui pode entrar Java ou JUnit, como resolver? any((!java)|| (!JUnit))
+        Mockito.when(detailedPersonUC.searchPersonRelatives(any(), any())).thenReturn(false);
+        Boolean retorno = executer.isRelative(person, "Teste");
+        Assert.assertFalse(retorno);
+        System.out.println(retorno);//false
 
-    /*
-    No método isRelative() do Executer, faça os 2 cenários abaixo:
-       Se a string passada for qualquer outra string, retorne false;
-  */
-
-
-//    @Test// Não está rodando
-//    void returnfalseAnyway() {// aqui pode entrar Java ou JUnit, como resolver? any((!java)|| (!JUnit))
-//        Mockito.when(detailedPersonUC.searchPersonRelatives(person, any())).thenReturn(false);
-//        Boolean retorno = service.isRelative(person, "teste");
-//        Assert.assertFalse(retorno);
-//    }
-
-
+    }
 
     // Mockito.verify verificar varias coisas: numero de vezes que executou,
     //                                         parâmetros recebidos e etc.
@@ -116,19 +86,19 @@ public class ExecuterTest {
     // ok  No método printStrAndInt() do Executer, teste se o método detailedPersonUC.printStringAndInt() foi chamado duas vezes
     //     e cada parâmetro em cada chamada.
     @Test
-    void checkIsdetailedPersonUCPrintStringAndIntIsCollTwoTimes() {
-        service.printStrAndInt();
+    void checkIsdetailedPersonUCPrintStringAndIntIsCollTwoTimes() { //rodando
+        executer.printStrAndInt();
         verify(detailedPersonUC, times(2)).printStringAndInt(anyString(), anyInt());
     }
-
+//
 //    @Test
-//    void whatsParametersCallFirt() {
-//        service.printStrAndInt();
+//    void whatsParametersCallFirt() {// rodando
+//        executer.printStrAndInt();
 //        verify(detailedPersonUC, times(1)).printStringAndInt(anyString(), anyInt());
 //    }
 //    @Test
-//    void whatsParametersCallSecond() {
-//        service.printStrAndInt();
+//    void whatsParametersCallSecond() { //rodando
+//        executer.printStrAndInt();
 //        verify(detailedPersonUC, times(2)).printStringAndInt(anyString(), anyInt());
 //    }
 
@@ -143,56 +113,66 @@ ok           Teste se o método printStringAndInt() é chamado em cada caso e co
    */
 
     // Se a idade for menor que 18, faça o teste para assegurar que o detailedPersonUC.printStringAndInt() e detailedPersonUC.getPersonAddress() não são chamados.
-    @Test
-    void youngThemAge18NotCallPrintStringAndIntAndGetPersonAddress() {
-        DetailedPerson person = new DetailedPerson();//instanciando o objeto da classe mocada
-        person.setAge(17);//setando o valor
-        person.setName("Nat");//seando o valor
-        service.execute(person);// chamando o métado execute e passando o parametro
-
-        verify(detailedPersonUC, never()).getPersonAddress(any(DetailedPerson.class));
-        verify(detailedPersonUC, never()).printStringAndInt(anyString(), anyInt());
-
-    }
-
-    // Faça com que a variável address dentro do método execute() nunca fique vazia.
-    @Test
-    void varAddresNerverIsEmpty(){
-
-        DetailedPerson person = new DetailedPerson();
-        service.execute(person);
-        Mockito.when(service.getAddressOf(isNotNull())).thenReturn(address);
-        Address returnAddress = service.getAddressOf(person);
-        Assert.assertNotNull(returnAddress);
-
-    }
-
-    @Test
-    void youngThemAge18CheckIfPrintStringAndIntIsCall() {
-        DetailedPerson person = new DetailedPerson();
-        person.setAge(17);
-        person.setName("Nat");
-        service.execute(person);
-        verify(detailedPersonUC, never()).getPersonAddress(any(DetailedPerson.class));
-        verify(detailedPersonUC, never()).printStringAndInt(anyString(), anyInt());
-        verify(detailedPersonUC, times(0)).printStringAndInt(anyString(), anyInt());
-        // aqui, a quantidade de vezez que deve ser é zero chamadas, pq a idade <18.
-    }
-
-
+//    @Test//rodando
+//    void youngThemAge18NotCallPrintStringAndIntAndGetPersonAddress() {
+//        DetailedPerson person = new DetailedPerson();//instanciando o objeto da classe mocada
+//        person.setAge(17);//setando o valor
+//        person.setName("Nat");//seando o valor
+//        executer.execute(person);// chamando o métado execute e passando o parametro
+//
+//        verify(detailedPersonUC, never()).getPersonAddress(any(DetailedPerson.class));
+//        verify(detailedPersonUC, never()).printStringAndInt(anyString(), anyInt());
+//
+//    }
+//
+//    // Faça com que a variável address dentro do método execute() nunca fique vazia.
+//    @Test
+//    void varAddresNerverIsEmpty(){//rodando
+//
+//        DetailedPerson person = new DetailedPerson();
+//        executer.execute(person);
+//        Mockito.when(executer.getAddressOf(isNotNull())).thenReturn(address);
+//        Address returnAddress = executer.getAddressOf(person);
+//        Assert.assertNotNull(returnAddress);
+//    }
+//
+//    @Test
+//    void youngThemAge18CheckIfPrintStringAndIntIsCall() {//rodando
+//        DetailedPerson person = new DetailedPerson();
+//        person.setAge(17);
+//        person.setName("Nat");
+//        executer.execute(person);
+//        verify(detailedPersonUC, never()).getPersonAddress(any(DetailedPerson.class));
+//        verify(detailedPersonUC, never()).printStringAndInt(anyString(), anyInt());
+//        verify(detailedPersonUC, times(0)).printStringAndInt(anyString(), anyInt());
+//        // aqui, a quantidade de vezez que deve ser é zero chamadas, pq a idade <18.
+//    }
+//
 //      @Test
-//    void olderOrIgualsAge18() {
+//    void olderOrIgualsAge18() { //rodando
 //
 //          DetailedPerson person = new DetailedPerson("Natalia", 30, Collections.singletonList("teste"), address);
 //          Address address = new Address("av", "Gyn", "Go", "Brazil");
 //          address.setStreet("Rua feliz");
-//          service.execute(person);// aqui vai chegar a idade e o nome(30 e "Natalia")
-//          service.getAddressOf(person);
+//          executer.execute(person);// aqui vai chegar a idade e o nome(30 e "Natalia")
+//          executer.getAddressOf(person);
 //
-//          detailedPersonUC.printStringAndInt(person.getName(), address.getStreet(), person.getAge());
+//          detailedPersonUC.printStringAndInt(person.getName(), person.getAge());
 //      }
 
 
+
+/*  ok = Linha 53 do código tem uma String sendo declarada que não está sendo utilizada - Remover ela.
+       = Desafio de implementar Fixture-Factory para a classe DetailedPerson presente nos testes
+    youngThemAge18NotCallPrintStringAndIntAndGetPersonAddress e
+    youngThemAge18CheckIfPrintStringAndIntIsCall, já existe exemplos de implementação
+    e utilização no mesmo projeto.
+
+       = Por qual motivo ou trecho de código não temos um BeforeEach com o trecho de código
+    MockitoAnnotations.initMocks(this) fazendo inicialização dos mocks?
+
+
+ */
 }
 
 

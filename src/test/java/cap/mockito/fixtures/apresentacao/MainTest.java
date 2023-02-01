@@ -70,14 +70,11 @@ class MainTest {
     void printValue() {
 //      O método when (Mockito.when) é usado para fazer stubs, mockar o valor retornado de um método.
         when(values.getValue()).thenReturn(3);
-
 /*
         Também é possível lançar exceções com stubs:
-
         when(values.getValue()).thenThrow(new RuntimeException());
         doThrow(new RuntimeException()).when(values).getValue();
 */
-
 /*
         O stub também pode ser feito dessa forma:
         doReturn(3).when(values).getValue();
